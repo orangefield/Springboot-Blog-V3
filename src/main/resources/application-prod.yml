@@ -11,8 +11,8 @@ spring:
   mustache:
     expose-session-attributes: true
   datasource:
-      url: jdbc:mariadb://아이피:3306/greendb 
-      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/greendb
+      driver-class-name: com.mysql.cj.jdbc.Driver
       username: 유저명
       password: 비밀번호
 

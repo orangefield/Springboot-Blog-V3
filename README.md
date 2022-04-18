@@ -72,6 +72,19 @@ createDate
 updateDate
 ```
 
+### 7. 기능정리
+- 카테고리 등록
+- 글쓰기
+- 글 목록 보기
+- 페이징
+- 글 상세보기
+- 검색
+- 글 삭제
+- 글 수정
+- 댓글(라이브러리 사용)          
+- 프로필 사진 업로드 (회원가입시)
+- 회원수정
+
 ### Gradle depenency update
 '''txt
 ./gradlew --refresh-dependencie
