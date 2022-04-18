@@ -12,9 +12,9 @@
 
 ### 2. DB설정
 ```sql
-CREATE USER 'green'@'%' IDENTIFIED BY 'green1234';
+CREATE USER 'blue'@'%' IDENTIFIED BY 'blue1234';
 CREATE DATABASE greendb;
-GRANT ALL PRIVILEGES ON greendb.* TO 'green'@'%';
+GRANT ALL PRIVILEGES ON bluedb.* TO 'blue'@'%';
 ```
 
 ### 3. 에디터
