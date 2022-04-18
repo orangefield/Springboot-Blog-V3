@@ -6,7 +6,7 @@
 - mustache
 - lombok
 - jpa
-- mariadb
+- mysql
 - security
 - validation
 
