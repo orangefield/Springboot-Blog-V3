@@ -26,7 +26,6 @@ public class PostWriteReqDto {
     @Size(min = 1, max = 60)
     private String title;
 
-    @NotNull // 공백은 보내도 되는데 키값은 전송해야 한다
     private MultipartFile thumbnailFile;
 
     @NotNull
@@ -36,7 +35,7 @@ public class PostWriteReqDto {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
-        post.setThumnail(thumbnail); // 받아와야 한다
+        post.setThumbnail(thumbnail); // 받아와야 한다
         post.setUser(principal); // 세션에서 가져와야 한다
         post.setCategory(category); // 받아와야 한다
         return post;

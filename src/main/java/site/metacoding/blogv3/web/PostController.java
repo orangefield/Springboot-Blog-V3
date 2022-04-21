@@ -2,20 +2,21 @@ package site.metacoding.blogv3.web;
 
 import java.util.List;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv3.config.auth.LoginUser;
 import site.metacoding.blogv3.domain.category.Category;
 import site.metacoding.blogv3.handler.ex.CustomException;
 import site.metacoding.blogv3.service.PostService;
-import site.metacoding.blogv3.util.Script;
 import site.metacoding.blogv3.web.dto.post.PostRespDto;
 import site.metacoding.blogv3.web.dto.post.PostWriteReqDto;
 
@@ -26,13 +27,21 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/user/{id}/post")
-    public String postList(@PathVariable Integer id, @AuthenticationPrincipal LoginUser loginUser, Model model) {
+    public String postList(Integer categoryId, @DefaultValue("0") Integer page, @PathVariable Integer id,
+            @AuthenticationPrincipal LoginUser loginUser,
+            Model model, @PageableDefault(size = 3) Pageable pageable) {
 
         // SELECT * FROM category WHERE userId = :id
         // 카테고리 가져갑시다
-        PostRespDto postRespDto = postService.게시글목록보기(id);
-        model.addAttribute("postRespDto", postRespDto);
+        PostRespDto postRespDto = null;
 
+        if (categoryId == null) {
+            postRespDto = postService.게시글목록보기(id, pageable);
+        } else {
+            postRespDto = postService.게시글카테고리별보기(id, categoryId, pageable);
+        }
+
+        model.addAttribute("postRespDto", postRespDto);
         return "/post/list";
     }
 
@@ -44,7 +53,7 @@ public class PostController {
             throw new CustomException("카테고리 등록이 필요합니다");
         }
 
-        model.addAttribute("categories");
+        model.addAttribute("categories", categories);
         return "/post/writeForm";
     }
 
