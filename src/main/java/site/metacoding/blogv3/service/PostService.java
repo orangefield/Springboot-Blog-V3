@@ -1,9 +1,15 @@
 package site.metacoding.blogv3.service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -12,12 +18,18 @@ import site.metacoding.blogv3.domain.category.CategoryRepository;
 import site.metacoding.blogv3.domain.post.Post;
 import site.metacoding.blogv3.domain.post.PostRepository;
 import site.metacoding.blogv3.domain.user.User;
+import site.metacoding.blogv3.handler.ex.CustomException;
+import site.metacoding.blogv3.util.UtilFileUpload;
 import site.metacoding.blogv3.web.dto.post.PostRespDto;
 import site.metacoding.blogv3.web.dto.post.PostWriteReqDto;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
+
+    @Value("${file.path}")
+    private String uploadFolder;
+
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
 
@@ -37,18 +49,24 @@ public class PostService {
     }
 
     @Transactional
-    public void 게시글쓰기(PostWriteReqDto postWriteReqDto) {
-        // 1. 이미지 파일 저장 (UUID로 변경해서 저장)
+    public void 게시글쓰기(PostWriteReqDto postWriteReqDto, User principal) {
 
-        // 2. 이미지 파일명을 Post 오브젝트의 thumbnail에 옮겨야 함
+        // 1. UUID로 파일 쓰고 경로 리턴 받기
+        String thumbnail = UtilFileUpload.write(uploadFolder, postWriteReqDto.getThumbnailFile());
 
-        // 3. title, content도 Post에 옮기기
+        // 2. 카테고리 있는지 확인
+        Optional<Category> categoryOp = categoryRepository.findById(postWriteReqDto.getCategoryId());
 
-        // 4. userId도 Post에 옮기기
+        // 3. post DB에 저장
+        if (categoryOp.isPresent()) {
 
-        // 5. categoryId도 Post에 옮기기
+            Post post = postWriteReqDto.toEntity(thumbnail, principal, categoryOp.get());
+            postRepository.save(post);
 
-        // 6. save 하면 끝
+        } else {
+            throw new CustomException("해당 카테고리가 존재하지 않습니다");
+        }
+
     }
 
 }
