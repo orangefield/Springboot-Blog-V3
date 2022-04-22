@@ -1,5 +1,6 @@
 package site.metacoding.blogv3.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +37,19 @@ public class PostService {
         Page<Post> postsEntity = postRepository.findByUserId(userId, pageable);
         List<Category> categoriesEntity = categoryRepository.findByUserId(userId);
 
+        // pageNumbers 만들기
+        List<Integer> pageNumbers = new ArrayList<>();
+        for (int i = 0; i < postsEntity.getTotalPages(); i++) {
+            pageNumbers.add(i);
+        }
+
         PostRespDto postRespDto = new PostRespDto(
                 postsEntity,
-                categoriesEntity);
+                categoriesEntity,
+                userId,
+                postsEntity.getNumber() - 1,
+                postsEntity.getNumber() + 1,
+                pageNumbers);
 
         return postRespDto;
     }
@@ -47,9 +58,19 @@ public class PostService {
         Page<Post> postsEntity = postRepository.findByUserIdAndCategoryId(userId, categoryId, pageable);
         List<Category> categoriesEntity = categoryRepository.findByUserId(userId);
 
+        // pageNumbers 만들기
+        List<Integer> pageNumbers = new ArrayList<>();
+        for (int i = 0; i < postsEntity.getTotalPages(); i++) {
+            pageNumbers.add(i);
+        }
+
         PostRespDto postRespDto = new PostRespDto(
                 postsEntity,
-                categoriesEntity);
+                categoriesEntity,
+                userId,
+                postsEntity.getNumber() - 1,
+                postsEntity.getNumber() + 1,
+                pageNumbers);
 
         return postRespDto;
     }
